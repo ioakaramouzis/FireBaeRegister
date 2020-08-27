@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,17 +24,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private  cards cards_data[];
 
-    private ArrayList<String> al;
-    private ArrayAdapter<String> arrayAdapter;
+    private arrayAdapter arrayAdapter;
     private int i;
     private FirebaseAuth mAuth;
 
 
 
+ListView listView;
+List<cards> rowItems;
 
 
 
@@ -45,18 +49,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checkUserSex();
-        al = new ArrayList<>();
-        al.add("php");
-        al.add("c");
-        al.add("python");
-        al.add("java");
-        al.add("html");
-        al.add("c++");
-        al.add("css");
-        al.add("javascript");
+        mAuth = FirebaseAuth.getInstance();
 
-        arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, al );
+        checkUserSex();
+        rowItems = new ArrayList<cards>();
+
+
+        arrayAdapter = new arrayAdapter(this, R.layout.item, rowItems );
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView)findViewById(R.id.frame);
 
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
-                al.remove(0);
+                rowItems.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
 
@@ -86,11 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                // Ask for more data here
-                al.add("XML ".concat(String.valueOf(i)));
-                arrayAdapter.notifyDataSetChanged();
-                Log.d("LIST", "notified");
-                i++;
+
             }
 
             @Override
@@ -125,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 if(snapshot.getKey().equals(user.getUid())){
                     UserSex="Male";
                     OppositeUserSex ="Female";
+                    GetOppositeSexUsers();
 
 
                 }
@@ -159,7 +155,47 @@ public class MainActivity extends AppCompatActivity {
                 if(snapshot.getKey().equals(user.getUid())){
                     UserSex="Female";
                     OppositeUserSex ="Male";
+                    GetOppositeSexUsers();
 
+
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    public void GetOppositeSexUsers(){
+
+        DatabaseReference OppositeSexDb = FirebaseDatabase.getInstance().getReference().child("Users").child(OppositeUserSex);
+        OppositeSexDb .addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                if(snapshot.exists());
+                {
+                        cards Items = new cards(snapshot.getKey(), snapshot.child("name").getValue().toString());
+                      rowItems.add(Items);
+                      arrayAdapter.notifyDataSetChanged();
 
                 }
             }
@@ -189,8 +225,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+
+
     public void LogOutUser(View view) {
-      //  mAuth.signOut();
+       mAuth.signOut();
         Intent intent = new Intent(MainActivity.this,LoginOrRegistration.class);
         startActivity(intent);
 
