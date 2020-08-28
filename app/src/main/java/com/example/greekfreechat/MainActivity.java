@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private arrayAdapter arrayAdapter;
     private int i;
     private FirebaseAuth mAuth;
+    private  DatabaseReference userDb;
+    private  String currentUid;
 
 
 
@@ -50,7 +53,8 @@ List<cards> rowItems;
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-
+        currentUid = mAuth.getCurrentUser().getUid();
+        userDb = FirebaseDatabase.getInstance().getReference().child("Users");
         checkUserSex();
         rowItems = new ArrayList<cards>();
 
@@ -75,11 +79,21 @@ List<cards> rowItems;
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
+                cards obj = (cards) dataObject;
+                String userId = obj.GetUserId();
+                userDb.child(OppositeUserSex).child(userId).child("connections").child("nope").child(currentUid).setValue(true);
+
                 Toast.makeText(MainActivity.this,"left",Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
+
+                cards obj = (cards) dataObject;
+                String userId = obj.GetUserId();
+                userDb.child(OppositeUserSex).child(userId).child("connections").child("yeps").child(currentUid).setValue(true);
+                isConnectionMatch(userId);
+
                 Toast.makeText(MainActivity.this,"right",Toast.LENGTH_LONG).show();
             }
 
@@ -103,6 +117,28 @@ List<cards> rowItems;
             }
         });
 
+    }
+
+    private void isConnectionMatch(String userId) {
+        DatabaseReference currentUserConnectionsDb = userDb.child(UserSex).child(currentUid).child("connections").child("yeps").child(userId);
+        currentUserConnectionsDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists())
+                {
+                    Toast.makeText(MainActivity.this,"New Connection!!",Toast.LENGTH_LONG).show();
+                    userDb.child(OppositeUserSex).child(snapshot.getKey()).child("connections").child("matches").child(currentUid).setValue(true);
+                    userDb.child(UserSex).child(currentUid).child("connections").child("matches").child(snapshot.getKey()).setValue(true);
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 
@@ -185,19 +221,19 @@ List<cards> rowItems;
 
 
     public void GetOppositeSexUsers(){
-
         DatabaseReference OppositeSexDb = FirebaseDatabase.getInstance().getReference().child("Users").child(OppositeUserSex);
         OppositeSexDb .addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                if(snapshot.exists());
+                if(snapshot.exists() && !snapshot.child("connections").child("nope").hasChild(currentUid) && !snapshot.child("connections").child("yeps").hasChild(currentUid))
                 {
                         cards Items = new cards(snapshot.getKey(), snapshot.child("name").getValue().toString());
                       rowItems.add(Items);
                       arrayAdapter.notifyDataSetChanged();
 
                 }
+
             }
 
             @Override
@@ -233,6 +269,16 @@ List<cards> rowItems;
        mAuth.signOut();
         Intent intent = new Intent(MainActivity.this,LoginOrRegistration.class);
         startActivity(intent);
+        finish();
+        return;
+
+
+    }
+
+    public void goToSettings(View view) {
+        Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+        startActivity(intent);
+        return;
 
 
     }
