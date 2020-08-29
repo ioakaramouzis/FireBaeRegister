@@ -277,8 +277,9 @@ List<cards> rowItems;
 
     public void goToSettings(View view) {
         Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+        intent.putExtra("UserSex",UserSex);
         startActivity(intent);
-        return;
+
 
 
     }
