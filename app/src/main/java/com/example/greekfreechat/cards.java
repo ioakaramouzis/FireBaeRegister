@@ -3,9 +3,11 @@ package com.example.greekfreechat;
 class cards {
     private  String userId;
     private  String name;
-    public  cards(String userId,String name){
+    private  String profileImageUrl;
+    public  cards(String userId,String name,String profileImageUrl){
         this.userId = userId;
         this.name = name;
+        this.profileImageUrl = profileImageUrl;
     }
 
 
@@ -29,5 +31,14 @@ class cards {
         this.name=name;
     }
 
+    public  String GetProfileImageUrl()
+    {
+        return  profileImageUrl;
+    }
+
+    public  void setProfileImageUrl(String profileImageUrl)
+    {
+        this.profileImageUrl=profileImageUrl;
+    }
 
 }

@@ -83,18 +83,26 @@ public class Registration extends AppCompatActivity {
                             Toast.makeText(Registration.this, "ok male", Toast.LENGTH_SHORT).show();
                             //FirebaseUser user = mAuth.getCurrentUser();
                             String userId = mAuth.getCurrentUser().getUid();
-                            DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child("Male").child(userId).child(
-                                    "name");
+                            DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child("Male").child(userId);
+                               Map userInfo = new HashMap<>();
+                               userInfo.put("name", name);
+                            userInfo.put("profileImageUrl", "default");
 
-                            currentUserDb.setValue(name);
+
+                            currentUserDb.updateChildren(userInfo);
 
                         }
 
                        else {
                             Toast.makeText(Registration.this, "ok female", Toast.LENGTH_SHORT).show();
                             String userId = mAuth.getCurrentUser().getUid();
-                            DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child("Female").child(userId).child("name");
-                            currentUserDb.setValue(name);
+                            DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child("Female").child(userId);
+                            Map userInfo = new HashMap<>();
+                            userInfo.put("name", name);
+                            userInfo.put("profileImageUrl", "default");
+
+
+                            currentUserDb.updateChildren(userInfo);
                         }
                  }
                   });

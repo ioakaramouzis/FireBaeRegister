@@ -130,7 +130,15 @@ public class SettingsActivity extends AppCompatActivity {
                     if(map.get("profileImageUrl") !=null)
                     {
                         profileImageUrl = map.get("profileImageUrl").toString();  //allagh
-                        Glide.with(getApplication()).load(profileImageUrl).into(ProfileImageView);
+                        switch (profileImageUrl){
+
+                            case "default":
+                                Glide.with(getApplication()).load(R.mipmap.ic_launcher).into(ProfileImageView);
+                            default:
+                                Glide.with(getApplication()).load(profileImageUrl).into(ProfileImageView);
+                                break;
+                        }
+
 
 
 

@@ -226,11 +226,19 @@ List<cards> rowItems;
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                if(snapshot.exists() && !snapshot.child("connections").child("nope").hasChild(currentUid) && !snapshot.child("connections").child("yeps").hasChild(currentUid))
-                {
-                        cards Items = new cards(snapshot.getKey(), snapshot.child("name").getValue().toString());
-                      rowItems.add(Items);
-                      arrayAdapter.notifyDataSetChanged();
+                if (snapshot.exists() && !snapshot.child("connections").child("nope").hasChild(currentUid) && !snapshot.child("connections").child("yeps").hasChild(currentUid)) {
+                    String profileImageUrl = "default";
+                    if (!snapshot.child("profileImageUrl").getValue().equals("default"))
+                    {
+                        profileImageUrl = snapshot.child("profileImageUrl").getValue().toString();
+
+
+                    }
+                        cards Items = new cards(snapshot.getKey(), snapshot.child("name").getValue().toString(), profileImageUrl);
+                        rowItems.add(Items);
+                        arrayAdapter.notifyDataSetChanged();
+
+
 
                 }
 
