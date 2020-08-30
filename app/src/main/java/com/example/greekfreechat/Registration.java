@@ -81,27 +81,22 @@ public class Registration extends AppCompatActivity {
 
                         if (buttonMale.isChecked()) {
                             Toast.makeText(Registration.this, "ok male", Toast.LENGTH_SHORT).show();
-                            //FirebaseUser user = mAuth.getCurrentUser();
                             String userId = mAuth.getCurrentUser().getUid();
-                            DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child("Male").child(userId);
+                            DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
                                Map userInfo = new HashMap<>();
                                userInfo.put("name", name);
+                               userInfo.put("sex","male");
                             userInfo.put("profileImageUrl", "default");
-
-
                             currentUserDb.updateChildren(userInfo);
-
                         }
-
-                       else {
+                        else {
                             Toast.makeText(Registration.this, "ok female", Toast.LENGTH_SHORT).show();
                             String userId = mAuth.getCurrentUser().getUid();
-                            DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child("Female").child(userId);
+                            DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
                             Map userInfo = new HashMap<>();
                             userInfo.put("name", name);
+                            userInfo.put("sex","female");
                             userInfo.put("profileImageUrl", "default");
-
-
                             currentUserDb.updateChildren(userInfo);
                         }
                  }

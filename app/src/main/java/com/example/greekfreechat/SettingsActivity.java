@@ -43,7 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private ImageView ProfileImageView;
 
-    private  String userId, phone, name, profileImageUrl;
+    private  String userId, phone, name, profileImageUrl,UserSex;
 
     private Uri resultUri;
 
@@ -59,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
 
-       String UserSex = getIntent().getExtras().getString("UserSex");
+
        mNameField = (EditText)findViewById(R.id.name);
        mPhoneField = (EditText)findViewById(R.id.phone);
        ProfileImageView = (ImageView)findViewById(R.id.profileImage);
@@ -70,7 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
        mAuth = FirebaseAuth.getInstance();
        userId = mAuth.getCurrentUser().getUid();
 
-       mCostumerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(UserSex).child(userId);
+       mCostumerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
        getUserInfo();
 
 
@@ -113,41 +113,38 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                if(snapshot.exists() && snapshot.getChildrenCount()>0)
-                {
-                      Map<String, Object> map = (Map<String, Object>) snapshot.getValue();
-                      if(map.get("name") !=null)
-                      {
-                            name = map.get("name").toString();
-                            mNameField.setText(name);
-                      }
-                    if(map.get("phone") !=null)
-                    {
+                if (snapshot.exists() && snapshot.getChildrenCount() > 0) {
+                    Map<String, Object> map = (Map<String, Object>) snapshot.getValue();
+                    if (map.get("name") != null) {
+                        name = map.get("name").toString();
+                        mNameField.setText(name);
+                    }
+                    if (map.get("phone") != null) {
                         phone = map.get("phone").toString();
                         mPhoneField.setText(phone);
                     }
+                    if (map.get("sex") != null) {
+                        UserSex = map.get("sex").toString();
 
-                    if(map.get("profileImageUrl") !=null)
-                    {
-                        profileImageUrl = map.get("profileImageUrl").toString();  //allagh
-                        switch (profileImageUrl){
 
-                            case "default":
-                                Glide.with(getApplication()).load(R.mipmap.ic_launcher).into(ProfileImageView);
-                            default:
-                                Glide.with(getApplication()).load(profileImageUrl).into(ProfileImageView);
-                                break;
+                        if (map.get("profileImageUrl") != null) {
+                            profileImageUrl = map.get("profileImageUrl").toString();  //allagh
+                            switch (profileImageUrl) {
+
+                                case "default":
+                                    Glide.with(getApplication()).load(R.mipmap.ic_launcher).into(ProfileImageView);
+                                default:
+                                    Glide.with(getApplication()).load(profileImageUrl).into(ProfileImageView);
+                                    break;
+                            }
+
+
                         }
-
-
-
-
-
                     }
+
                 }
 
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
