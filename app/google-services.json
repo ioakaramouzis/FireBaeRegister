@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "736129468395",
+    "firebase_url": "https://greekfreechat-7e65b.firebaseio.com",
+    "project_id": "greekfreechat-7e65b",
+    "storage_bucket": "greekfreechat-7e65b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:736129468395:android:416eb8125f8f0eff5d3bae",
+        "android_client_info": {
+          "package_name": "com.example.greekfreechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "736129468395-e299m4fkitsrr11bgimq0rgenbmbb4dk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0kgaUqS_y9USJGG8FIx7WmNcfiz_Xg78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "736129468395-e299m4fkitsrr11bgimq0rgenbmbb4dk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
